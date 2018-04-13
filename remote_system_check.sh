@@ -3,7 +3,7 @@
 fail=false
 
 echo "Checking programs"
-programs=(curl docker docker-compose)
+programs=(curl docker docker-compose env tr unzip)
 counter=0
 for program in "${programs[@]}"
 do

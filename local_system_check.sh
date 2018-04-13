@@ -3,7 +3,7 @@
 fail=false
 
 echo "Checking programs"
-programs=(curl jmeter pip python scp ssh)
+programs=(curl jmeter pip3 python3 scp ssh zip)
 counter=0
 for program in "${programs[@]}"
 do
