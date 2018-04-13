@@ -4,6 +4,10 @@ services:
   httpd:
     image: "httpd:alpine"
 
+  lighttpd:
+    build: "./lighttpd"
+    image: "lighttpd"
+
   nginx:
     image: "nginx:alpine"
 
