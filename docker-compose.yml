@@ -4,3 +4,6 @@ services:
   httpd:
     image: "httpd:alpine"
 
+  nginx:
+    image: "nginx:alpine"
+
