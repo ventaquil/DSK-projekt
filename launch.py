@@ -27,13 +27,6 @@ def check_local_system():
 def check_remote_system(domain):
     print("Checking remote connection...")
 
-#    ssh=subprocess.Popen(["ssh", "-T", domain], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
-#
-#    out, err=ssh.communicate("ls")
-#
-#    print(out, err)
-#    return True
-
     if is_call_returns_error(call(["ssh", "-T", domain, "exit"])):
         print("  Cannot connect to given domain")
 
