@@ -19,6 +19,7 @@ services:
     ports:
      - "$HTTPD_PORT:80"
     volumes:
+     - "./httpd/httpd.conf:/usr/local/apache2/conf/httpd.conf"
      - "./public:/usr/local/apache2/htdocs"
     working_dir: "/usr/local/apache2/htdocs"
 
@@ -30,6 +31,7 @@ services:
     ports:
      - "$LIGHTTPD_PORT:80"
     volumes:
+     - "./lighttpd/lighttpd.conf:/etc/lighttpd/lighttpd.conf"
      - "./public:/var/www/localhost/htdocs"
     working_dir: "/var/www/localhost/htdocs"
 
@@ -40,6 +42,7 @@ services:
     ports:
      - "$NGINX_PORT:80"
     volumes:
+     - "./nginx/nginx.conf:/etc/nginx/nginx.conf"
      - "./public:/usr/share/nginx/html"
     working_dir: "/usr/share/nginx/html"
 
