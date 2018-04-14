@@ -155,10 +155,14 @@ def test(domain, directory):
 
         return services
 
-    def test_service(service):
+    def test_service(service, target):
         print("Testing " + service.upper() + " server...")
 
-        if is_call_returns_error(call(["ssh", "-T", domain, "cd " + directory + " && ./enable_service.sh " + service])) or is_call_returns_error(call(["ssh", "-T", domain, "cd " + directory + " && ./disable_service.sh " + service])): # @TODO add JMeter tests here
+        start=call(["ssh", "-T", domain, "cd " + directory + " && ./enable_service.sh " + service])
+        jmeter=call(["jmeter", "-n", "-t", "./test_plan.jmx", "-l", "./" + service + "/log.jtl", "-j", "./" + service + "/jmeter.log", "-Jtarget=" + target, "-Jservice=" + service])
+        stop=call(["ssh", "-T", domain, "cd " + directory + " && ./disable_service.sh " + service])
+
+        if is_call_returns_error(start) or is_call_returns_error(jmeter) or is_call_returns_error(stop):
             print("  Error during testing server " + service)
         else:
             print("  Success")
@@ -168,7 +172,7 @@ def test(domain, directory):
     services=list_services()
 
     for service in services:
-        test_service(service)
+        test_service(service, ip)
 
 def unpack_package(domain):
     print("Unpacking package...")
