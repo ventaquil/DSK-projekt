@@ -5,3 +5,7 @@ public/scripts/*
 public/static/*
 !public/static/.gitkeep
 
+# JMeter
+jmeter.log
+*.jtl
+
