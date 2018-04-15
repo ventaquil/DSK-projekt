@@ -26,6 +26,23 @@
         <stringProp name="ThreadGroup.delay"></stringProp>
       </ThreadGroup>
       <hashTree>
+        <BeanShellPreProcessor guiclass="TestBeanGUI" testclass="BeanShellPreProcessor" testname="BeanShell PreProcessor" enabled="true">
+          <boolProp name="resetInterpreter">false</boolProp>
+          <stringProp name="parameters"></stringProp>
+          <stringProp name="filename"></stringProp>
+          <stringProp name="script">// Change file properties into variables
+Enumeration properties = props.propertyNames();
+
+while (properties.hasMoreElements()) {
+    String property = properties.nextElement().toString();
+
+    if (property.startsWith(&quot;files.&quot;)) {
+        vars.put(property, props.getProperty(property));
+    }
+}
+</stringProp>
+        </BeanShellPreProcessor>
+        <hashTree/>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="HTTP Request - /index.html" enabled="true">
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="Zmienne zdefiniowane przez użytkownika" enabled="true">
             <collectionProp name="Arguments.arguments"/>
