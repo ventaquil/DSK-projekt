@@ -164,17 +164,31 @@ def test(domain, directory):
 
         return services
 
+    def save_cadvisor_logs(service, logs):
+        print("Saving cAdvisor logs...")
+
+        cadvisor=open("./" + service + "/cadvisor.json", "wb")
+
+        if cadvisor.write(logs) > 0:
+            print("  Success")
+        else:
+            print("  Error during saving cAdvisor logs")
+
     def test_service(service, target):
         print("Testing " + service.upper() + " server...")
 
         start=call(["ssh", "-T", domain, "cd " + directory + " && ./enable_service.sh " + service])
         jmeter=call(["jmeter", "-n", "-t", "./test_plan.jmx", "-l", "./" + service + "/log.jtl", "-j", "./" + service + "/jmeter.log", "-Jtarget=" + target, "-Jservice=" + service, "-Jusers=32", "-Jrepeats=8"] + get_static_files_as_parameters() + get_scripts_as_parameters())
+        cadvisor=call(["ssh", "-T", domain, "curl", "http://localhost:8080/api/v1.3/docker/$(docker ps | grep " + service + " | awk -F ' ' '{print $1}')"])
         stop=call(["ssh", "-T", domain, "cd " + directory + " && ./disable_service.sh " + service])
 
-        if is_call_returns_error(start) or is_call_returns_error(jmeter) or is_call_returns_error(stop):
+        if is_call_returns_error(start) or is_call_returns_error(jmeter) or is_call_returns_error(cadvisor) or is_call_returns_error(stop):
             print("  Error during testing server " + service)
         else:
             print("  Success")
+
+        output, error=cadvisor
+        save_cadvisor_logs(service, output)
 
     ip=get_public_ip(domain)
 

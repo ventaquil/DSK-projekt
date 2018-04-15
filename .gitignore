@@ -4,6 +4,7 @@ public/scripts/*
 !public/scripts/.gitkeep
 public/static/*
 !public/static/.gitkeep
+cadvisor.json
 
 # JMeter
 jmeter.log
