@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import argparse
+import os
 import subprocess
 import sys
 import yaml
@@ -138,6 +139,14 @@ def test(domain, directory):
 
         return output.decode("utf-8").strip()
 
+    def get_scripts_as_parameters():
+        scripts=[file for file in os.listdir("./public/scripts/") if not file.endswith(".gitkeep")]
+        return ["-Jfiles.scripts." + str(index) + "=" + file for index, file in enumerate(scripts, 1)]
+
+    def get_static_files_as_parameters():
+        static_files=[file for file in os.listdir("./public/static/") if not file.endswith(".gitkeep")]
+        return ["-Jfiles.static." + str(index) + "=" + file for index, file in enumerate(static_files, 1)]
+
     def list_services():
         services=[]
 
@@ -159,7 +168,7 @@ def test(domain, directory):
         print("Testing " + service.upper() + " server...")
 
         start=call(["ssh", "-T", domain, "cd " + directory + " && ./enable_service.sh " + service])
-        jmeter=call(["jmeter", "-n", "-t", "./test_plan.jmx", "-l", "./" + service + "/log.jtl", "-j", "./" + service + "/jmeter.log", "-Jtarget=" + target, "-Jservice=" + service])
+        jmeter=call(["jmeter", "-n", "-t", "./test_plan.jmx", "-l", "./" + service + "/log.jtl", "-j", "./" + service + "/jmeter.log", "-Jtarget=" + target, "-Jservice=" + service, "-Jusers=32", "-Jrepeats=8"] + get_static_files_as_parameters() + get_scripts_as_parameters())
         stop=call(["ssh", "-T", domain, "cd " + directory + " && ./disable_service.sh " + service])
 
         if is_call_returns_error(start) or is_call_returns_error(jmeter) or is_call_returns_error(stop):
