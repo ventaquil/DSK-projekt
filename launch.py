@@ -62,10 +62,14 @@ def is_call_returns_error(call):
 def main():
     parser=argparse.ArgumentParser(description="Test launcher")
     parser.add_argument("domain", help="Where will you host your test servers?")
+    parser.add_argument("-u", "--users", type=int, default=32, help="Number of JMeter users (default 32)")
+    parser.add_argument("-r", "--repeats", type=int, default=8, help="Number of JMeter scripts repeats (default 8)")
     
     args=parser.parse_args()
 
     domain=args.domain
+    users=args.users
+    repeats=args.repeats
 
     check_local_system()
 
@@ -75,7 +79,7 @@ def main():
 
     directory=unpack_package(domain)
 
-    test(domain, directory)
+    test(domain, directory, users, repeats)
 
     remove_directory(domain, directory)
 
@@ -124,7 +128,7 @@ def send_package(domain):
     else:
         print("  Success")
 
-def test(domain, directory):
+def test(domain, directory, users, repeats):
     def get_public_ip(domain):
         print("Getting server public IP...")
 
@@ -174,11 +178,11 @@ def test(domain, directory):
         else:
             print("  Error during saving cAdvisor logs")
 
-    def test_service(service, target):
+    def test_service(service, target, users, repeats):
         print("Testing " + service.upper() + " server...")
 
         start=call(["ssh", "-T", domain, "cd " + directory + " && ./enable_service.sh " + service])
-        jmeter=call(["jmeter", "-n", "-t", "./test_plan.jmx", "-l", "./" + service + "/log.jtl", "-j", "./" + service + "/jmeter.log", "-Jtarget=" + target, "-Jservice=" + service, "-Jusers=32", "-Jrepeats=8"] + get_static_files_as_parameters() + get_scripts_as_parameters())
+        jmeter=call(["jmeter", "-n", "-t", "./test_plan.jmx", "-l", "./" + service + "/log.jtl", "-j", "./" + service + "/jmeter.log", "-Jtarget=" + target, "-Jservice=" + service, "-Jusers=" + str(users), "-Jrepeats=" + str(repeats)] + get_static_files_as_parameters() + get_scripts_as_parameters())
         cadvisor=call(["ssh", "-T", domain, "curl", "http://localhost:8080/api/v1.3/docker/$(docker ps | grep " + service + " | awk -F ' ' '{print $1}')"])
         stop=call(["ssh", "-T", domain, "cd " + directory + " && ./disable_service.sh " + service])
 
@@ -195,7 +199,7 @@ def test(domain, directory):
     services=list_services()
 
     for service in services:
-        test_service(service, ip)
+        test_service(service, ip, users, repeats)
 
 def unpack_package(domain):
     print("Unpacking package...")
