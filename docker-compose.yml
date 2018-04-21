@@ -13,15 +13,16 @@ services:
      - "/dev/disk:/dev/disk:ro"
 
   httpd:
+    build: "./httpd"
     depends_on:
      - "cadvisor"
     image: "httpd:alpine"
     ports:
      - "$HTTPD_PORT:80"
     volumes:
-     - "./httpd/httpd.conf:/usr/local/apache2/conf/httpd.conf"
-     - "./public:/usr/local/apache2/htdocs"
-    working_dir: "/usr/local/apache2/htdocs"
+     - "./httpd/httpd.conf:/etc/apache2/httpd.conf"
+     - "./public:/var/www/localhost/htdocs"
+    working_dir: "/var/www/localhost/htdocs"
 
   lighttpd:
     build: "./lighttpd"
