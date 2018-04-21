@@ -37,6 +37,7 @@ services:
     working_dir: "/var/www/localhost/htdocs"
 
   nginx:
+    build: "./nginx"
     depends_on:
      - "cadvisor"
     image: "nginx:alpine"
@@ -44,6 +45,7 @@ services:
      - "$NGINX_PORT:80"
     volumes:
      - "./nginx/nginx.conf:/etc/nginx/nginx.conf"
-     - "./public:/usr/share/nginx/html"
-    working_dir: "/usr/share/nginx/html"
+     - "./nginx/conf.d:/etc/nginx/conf.d"
+     - "./public:/var/www/localhost/htdocs"
+    working_dir: "/var/www/localhost/htdocs"
 
