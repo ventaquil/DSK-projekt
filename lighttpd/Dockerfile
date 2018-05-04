@@ -14,6 +14,8 @@ RUN sed -i '/tty/d' /etc/inittab && \
 		sed -i 's/cgroup_add_service /# cgroup_add_service /g' /lib/rc/sh/openrc-run.sh && \
 		rm -f hwclock hwdrivers modules modules-load modloop
 
+RUN mkdir -p /var/lib/lighttpd/cache/compress
+
 EXPOSE 80
 
 CMD ["/sbin/init"]
