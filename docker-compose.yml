@@ -34,6 +34,10 @@ services:
      - "$LIGHTTPD_PORT:80"
     volumes:
      - "./lighttpd/lighttpd.conf:/etc/lighttpd/lighttpd.conf"
+     - "./lighttpd/mime-types.conf:/etc/lighttpd/mime-types.conf"
+     - "./lighttpd/mod_cgi.conf:/etc/lighttpd/mod_cgi.conf"
+     - "./lighttpd/mod_fastcgi.conf:/etc/lighttpd/mod_fastcgi.conf"
+     - "./lighttpd/mod_fastcgi_fpm.conf:/etc/lighttpd/mod_fastcgi_fpm.conf"
      - "./public:/var/www/localhost/htdocs"
     working_dir: "/var/www/localhost/htdocs"
 
