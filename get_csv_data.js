@@ -50,15 +50,11 @@ const cpu_in_time = stats.map(stat => {
         startTime = time
     }
 
-    if (!!previous) {
-        cpuUsage = (total - previous) / 1000000000 // Don't ask why
-    }
+    cpuUsage = (!!previous) ? (total - previous) / 1000000000 : 0 // Don't ask why
 
     previous = total
 
-    if (!!cpuUsage) {
-        return { cpuUsage, cpuUsageInPercentage: cpuUsage * 100, time: time - startTime }
-    }
+    return { cpuUsage, cpuUsageInPercentage: cpuUsage * 100, time: time - startTime }
 }).filter(field => !!field)
 
 cpu_in_time.unshift({
